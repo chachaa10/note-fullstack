@@ -1,0 +1,17 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "start": "concurrently \"cd backend && bun run dev\" \"cd frontend && bun run dev\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
