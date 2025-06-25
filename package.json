@@ -5,6 +5,7 @@
   "main": "",
   "scripts": {
     "start": "concurrently \"cd backend && bun run dev\" \"cd frontend && bun run dev\"",
+    "build": "cd frontend && bun run build && cp -Recurse dist ../backend && git add . && git commit -m uibuild && git push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
