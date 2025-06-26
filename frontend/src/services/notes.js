@@ -17,8 +17,14 @@ const updateNotes = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
+const deleteNotes = (id) => {
+  const request = axios.delete(`${baseUrl}/${id}`);
+  return request.then((response) => response.data);
+};
+
 export default {
   getAllNotes,
   createNotes,
   updateNotes,
+  deleteNotes,
 };

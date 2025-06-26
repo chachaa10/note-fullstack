@@ -52,6 +52,12 @@ const App = () => {
       });
   };
 
+  const deleteNote = (id) => {
+    notesService.deleteNotes(id).then(() => {
+      setNotes(notes.filter((note) => note.id !== id));
+    });
+  };
+
   if (!notes) {
     return null;
   }
@@ -73,6 +79,7 @@ const App = () => {
             key={note.id}
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
+            deleteNote={() => deleteNote(note.id)}
           />
         ))}
       </ul>

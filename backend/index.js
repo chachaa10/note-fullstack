@@ -1,52 +1,43 @@
+const { NoteModel } = require('./models/note');
 const express = require('express');
 
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
-app.use(express.static('./dist'));
+// app.use(express.static('./dist'));
 app.use(express.json());
 
-let notes = [
-  {
-    id: '1',
-    content: 'HTML is easy',
-    important: true,
-  },
-  {
-    id: '2',
-    content: 'Browser can execute only JavaScript',
-    important: false,
-  },
-  {
-    id: '3',
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true,
-  },
-];
-
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>');
-});
-
+// Retrieve all notes
 app.get('/api/notes', (request, response) => {
-  response.json(notes);
+  NoteModel.find({})
+    .then((notes) => {
+      response.json(notes);
+    })
+    .catch(() => {
+      response.status(500).json({ error: 'error fetching notes' });
+    });
 });
 
+// Retrieve a specific note
 app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id;
-  const note = notes.find((note) => note.id === id);
-
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  NoteModel.findById(id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.statusMessage = 'Note not found';
+        response.status(404).end();
+      }
+    })
+    .catch(() => {
+      response.status(500).json({ error: 'error fetching note' });
+    });
 });
 
-const generateId = () => {
-  const maxId =
-    notes.length > 0 ? Math.max(...notes.map((n) => Number(n.id))) : 0;
-  return String(maxId + 1);
-};
-
+// Create a new note
 app.post('/api/notes', (request, response) => {
   const body = request.body;
 
@@ -56,38 +47,52 @@ app.post('/api/notes', (request, response) => {
     });
   }
 
-  const note = {
+  const note = new NoteModel({
     content: body.content,
     important: body.important || false,
-    id: generateId(),
-  };
+    date: new Date(),
+  });
 
-  notes = notes.concat(note);
-
-  response.json(note);
+  note
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch(() => {
+      response.status(500).json({ error: 'error creating note' });
+    });
 });
 
+// Update a specific note
 app.put('/api/notes/:id', (request, response) => {
   const id = request.params.id;
   const body = request.body;
 
-  const note = notes.find((note) => note.id === id);
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
 
-  if (note) {
-    note.content = body.content;
-    note.important = body.important;
-    response.json(note);
-  } else {
-    response.statusMessage = 'Note not found';
-    response.status(404).end();
-  }
+  NoteModel.findByIdAndUpdate(id, note, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote);
+    })
+    .catch(() => {
+      response.status(500).json({ error: 'error updating note' });
+    });
 });
 
+// Delete a specific note
 app.delete('/api/notes/:id', (request, response) => {
   const id = request.params.id;
-  notes = notes.filter((note) => note.id !== id);
 
-  response.status(204).end();
+  NoteModel.findByIdAndDelete(id)
+    .then(() => {
+      response.status(204).end();
+    })
+    .catch(() => {
+      response.status(500).json({ error: 'error deleting note' });
+    });
 });
 
 const PORT = process.env.PORT || 3001;
