@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Footer } from './components/Footer';
 import Note from './components/Note';
-import Notification from './components/Notification';
-import notesService from './services/notes';
+import { default as notesService } from './services/notes';
 
 const App = () => {
   const [notes, setNotes] = useState(null);
@@ -69,7 +68,7 @@ const App = () => {
       <h1>Notes</h1>
       <h2>Number of notes {notes.length}</h2>
 
-      <Notification message={errorMessage} />
+      {/* <Notification message={errorMessage} /> */}
       <button onClick={() => setShowAll(!showAll)}>
         show {showAll ? 'important' : 'all'}
       </button>

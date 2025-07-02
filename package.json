@@ -14,5 +14,8 @@
   "type": "module",
   "dependencies": {
     "concurrently": "^9.2.0"
+  },
+  "devDependencies": {
+    "globals": "^16.2.0"
   }
 }
