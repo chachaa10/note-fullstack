@@ -8,17 +8,19 @@ notesRouter.get('/', async (request, response) => {
 });
 
 // retrieve one note
-notesRouter.get('/:id', (request, response, next) => {
+notesRouter.get('/:id', async (request, response, next) => {
+  const id = request.params.id;
+
   try {
-    const note = NoteModel.findById(request.params.id);
+    const note = await NoteModel.findById(id);
 
     if (!note) {
-      response.status(404).end();
+      return response.status(404).end();
     }
 
     response.json(note);
-  } catch (exception) {
-    next(exception);
+  } catch (error) {
+    next(error);
   }
 });
 
