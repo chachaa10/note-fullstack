@@ -1,4 +1,6 @@
-const { NoteModel } = require('../models/note');
+const NoteModel = require('../models/note');
+const UserModel = require('../models/user');
+const bcrypt = require('bcrypt');
 
 const initialNotes = [
   {
@@ -21,7 +23,23 @@ const nonExistingId = async () => {
 
 const notesInDb = async () => {
   const notes = await NoteModel.find({});
-  return notes.map(note => note.toJSON());
-}
+  return notes.map((note) => note.toJSON());
+};
 
-module.exports = { initialNotes, nonExistingId, notesInDb };
+const usersInDb = async () => {
+  const users = await UserModel.find({});
+  return users.map((user) => user.toJSON());
+};
+
+const hashedPassword = async (password) => {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
+};
+
+module.exports = {
+  initialNotes,
+  nonExistingId,
+  notesInDb,
+  usersInDb,
+  hashedPassword,
+};

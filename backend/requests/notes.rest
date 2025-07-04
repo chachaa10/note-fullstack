@@ -1,0 +1,17 @@
+GET http://localhost:3001/api/notes/
+
+###
+GET http://localhost:3001/api/notes/6867855d0ad28df67ba98f32
+
+###
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+  "content": "this is a note from the root user",
+  "important": true,
+  "userId": "686787800ad28df67ba98f58"
+}
+
+###
+DELETE http://localhost:3001/api/notes/6867819df6f83c8f001776c0

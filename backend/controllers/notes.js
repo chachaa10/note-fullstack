@@ -1,9 +1,13 @@
 const notesRouter = require('express').Router();
-const { NoteModel } = require('../models/note');
+const Note = require('../models/note');
+const User = require('../models/user');
 
 // retrieve all notes
 notesRouter.get('/', async (request, response) => {
-  const notes = await NoteModel.find({});
+  const notes = await Note.find({}).populate('user', {
+    username: 1,
+    name: 1,
+  });
   response.json(notes);
 });
 
@@ -12,7 +16,7 @@ notesRouter.get('/:id', async (request, response, next) => {
   const id = request.params.id;
 
   try {
-    const note = await NoteModel.findById(id);
+    const note = await Note.findById(id);
 
     if (!note) {
       return response.status(404).end();
@@ -25,20 +29,29 @@ notesRouter.get('/:id', async (request, response, next) => {
 });
 
 // create a new note
-notesRouter.post('/', async (request, response, next) => {
-  const body = request.body;
+notesRouter.post('/', async (request, response) => {
+  const { userId, content, important } = request.body;
 
-  const note = new NoteModel({
-    content: body.content,
-    important: body.important || false,
+  if (!content) {
+    return response.status(400).json({ error: 'content missing' });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return response.status(400).json({ error: 'userId missing or not valid' });
+  }
+
+  const note = new Note({
+    content,
+    important: important || false,
+    user: user._id,
   });
 
-  try {
-    const savedNote = await note.save();
-    response.status(201).json(savedNote);
-  } catch (exception) {
-    next(exception);
-  }
+  const savedNote = await note.save();
+  user.notes = user.notes.concat(savedNote._id);
+  await user.save();
+
+  response.status(201).json(savedNote);
 });
 
 // delete a note
@@ -46,7 +59,7 @@ notesRouter.delete('/:id', async (request, response, next) => {
   const id = request.params.id;
 
   try {
-    await NoteModel.findByIdAndDelete(id);
+    await Note.findByIdAndDelete(id);
     response.status(204).end();
   } catch (exception) {
     next(exception);
@@ -59,7 +72,7 @@ notesRouter.put('/:id', async (request, response, next) => {
   const { content, important } = request.body;
 
   try {
-    const note = await NoteModel.findById(id);
+    const note = await Note.findById(id);
 
     note.content = content;
     note.important = important;

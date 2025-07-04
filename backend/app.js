@@ -4,6 +4,7 @@ const { MONGODB_URI } = require('./utils/config');
 const logger = require('./utils/logger');
 const middleware = require('./utils/middleware');
 const notesRouter = require('./controllers/notes');
+const usersRouter = require('./controllers/users');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(middleware.requestLogger);
 
 // routes
 app.use('/api/notes', notesRouter);
+app.use('/api/users', usersRouter);
 
 // error handling
 app.use(middleware.unknownEndpoint);
