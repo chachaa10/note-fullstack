@@ -6,12 +6,13 @@ GET http://localhost:3001/api/notes/6867855d0ad28df67ba98f32
 ###
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNoYWxleCIsImlkIjoiNjg3MDc5OTk3Y2VjNjM5ZjlmYzE4ZDZlIiwiaWF0IjoxNzUyMjAyOTM2fQ.xi0zxjRKjSdjy-ftLEaAULOVy_cumkcqf3mPqCpyAEg
 
 {
-  "content": "this is a note from the root user",
+  "content": "2nd note from chalex",
   "important": true,
-  "userId": "686787800ad28df67ba98f58"
+  "userId": "687079997cec639f9fc18d6e"
 }
 
 ###
-DELETE http://localhost:3001/api/notes/6867819df6f83c8f001776c0
+DELETE http://localhost:3001/api/notes/68707dc4f82f306dfa3e659d
