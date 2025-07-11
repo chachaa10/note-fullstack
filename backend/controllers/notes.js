@@ -33,8 +33,8 @@ notesRouter.post('/', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' });
   }
-  const user = await User.findById(decodedToken.id);
 
+  const user = await User.findById(decodedToken.id);
   if (!user) {
     return response.status(400).json({ error: 'UserId missing or invalid' });
   }
