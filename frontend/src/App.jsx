@@ -15,10 +15,21 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
+  const userKeyStorage = 'user';
+
   useEffect(() => {
     notesService.getAllNotes().then((initialNotes) => {
       setNotes(initialNotes);
     });
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem(userKeyStorage);
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      notesService.setToken(user.token);
+    }
   }, []);
 
   const handleLogin = async (event) => {
@@ -27,8 +38,11 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
 
+      window.localStorage.setItem(userKeyStorage, JSON.stringify(user));
+
       notesService.setToken(user.token);
       setUser(user);
+
       setUsername('');
       setPassword('');
     } catch (exception) {
@@ -37,6 +51,11 @@ const App = () => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem(userKeyStorage);
+    setUser(null);
   };
 
   const addNote = (event) => {
@@ -90,6 +109,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      {user && <button onClick={handleLogout}>Logout</button>}
 
       <Notification message={errorMessage} />
 
