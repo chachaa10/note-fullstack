@@ -25,6 +25,7 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem(userKeyStorage);
+
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -39,7 +40,6 @@ const App = () => {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem(userKeyStorage, JSON.stringify(user));
-
       notesService.setToken(user.token);
       setUser(user);
 
@@ -57,54 +57,6 @@ const App = () => {
     window.localStorage.removeItem(userKeyStorage);
     setUser(null);
   };
-
-  const addNote = (event) => {
-    event.preventDefault();
-
-    if (newNotes.trim() === '') {
-      return;
-    }
-
-    const newNote = {
-      content: newNotes,
-      important: Math.random() < 0.5,
-    };
-
-    notesService.createNotes(newNote).then((returnedNote) => {
-      setNotes([...notes, returnedNote]);
-      setNewNotes('');
-    });
-  };
-
-  const toggleImportanceOf = (id) => {
-    const note = notes.find((note) => note.id === id);
-    const changedNote = { ...note, important: !note.important };
-
-    notesService
-      .updateNotes(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id === id ? returnedNote : note)));
-      })
-      .catch(() => {
-        setErrorMessage(`Note ${note.content} was already removed from server`);
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-        setNotes(notes.filter((n) => n.id !== id));
-      });
-  };
-
-  const deleteNote = (id) => {
-    notesService.deleteNotes(id).then(() => {
-      setNotes(notes.filter((note) => note.id !== id));
-    });
-  };
-
-  if (!notes) {
-    return null;
-  }
-
-  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   return (
     <div>
@@ -126,13 +78,12 @@ const App = () => {
           <p>{user.username} logged-in</p>
           <NoteForm
             showAll={showAll}
-            notesToShow={notesToShow}
-            toggleImportanceOf={toggleImportanceOf}
-            deleteNote={deleteNote}
-            addNote={addNote}
             newNotes={newNotes}
             setNewNotes={setNewNotes}
             setShowAll={setShowAll}
+            notes={notes}
+            setNotes={setNotes}
+            setErrorMessage={setErrorMessage}
           />
         </div>
       )}
