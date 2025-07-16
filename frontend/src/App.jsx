@@ -1,19 +1,43 @@
 import { useEffect, useState } from 'react';
-import { Footer } from './components/Footer';
-import Note from './components/Note';
-import { default as notesService } from './services/notes';
+import Footer from './components/Footer';
+import LoginForm from './components/LoginForm';
+import NoteForm from './components/NoteForm';
+import Notification from './components/Notification';
+import loginService from './services/login';
+import notesService from './services/notes';
 
 const App = () => {
   const [notes, setNotes] = useState(null);
   const [newNotes, setNewNotes] = useState('');
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('some error happened...');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     notesService.getAllNotes().then((initialNotes) => {
       setNotes(initialNotes);
     });
   }, []);
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const user = await loginService.login({ username, password });
+
+      notesService.setToken(user.token);
+      setUser(user);
+      setUsername('');
+      setPassword('');
+    } catch (exception) {
+      setErrorMessage('Wrong Credentials');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
 
   const addNote = (event) => {
     event.preventDefault();
@@ -66,30 +90,33 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <h2>Number of notes {notes.length}</h2>
 
-      {/* <Notification message={errorMessage} /> */}
-      <button onClick={() => setShowAll(!showAll)}>
-        show {showAll ? 'important' : 'all'}
-      </button>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-            deleteNote={() => deleteNote(note.id)}
-          />
-        ))}
-      </ul>
-      <form onSubmit={addNote}>
-        <input
-          type='text'
-          value={newNotes}
-          onChange={(event) => setNewNotes(event.target.value)}
+      <Notification message={errorMessage} />
+
+      {user === null ? (
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
         />
-        <button type='submit'>save</button>
-      </form>
+      ) : (
+        <div>
+          <p>{user.username} logged-in</p>
+          <NoteForm
+            showAll={showAll}
+            notesToShow={notesToShow}
+            toggleImportanceOf={toggleImportanceOf}
+            deleteNote={deleteNote}
+            addNote={addNote}
+            newNotes={newNotes}
+            setNewNotes={setNewNotes}
+            setShowAll={setShowAll}
+          />
+        </div>
+      )}
+
       <Footer />
     </div>
   );

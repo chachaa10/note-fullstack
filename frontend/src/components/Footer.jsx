@@ -1,4 +1,4 @@
-export const Footer = () => {
+const Footer = () => {
   const footerStyle = {
     color: 'green',
     fontStye: 'italic',
@@ -13,3 +13,5 @@ export const Footer = () => {
     </div>
   );
 };
+
+export default Footer;
