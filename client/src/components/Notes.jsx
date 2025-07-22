@@ -1,19 +1,23 @@
+import { useEffect, useState } from 'react';
 import notesService from '../services/notes';
 import Note from './Note';
 import NoteForm from './NoteForm';
 
-const Notes = ({
-  showAll,
-  newNotes,
-  setNewNotes,
-  setShowAll,
-  notes,
-  setNotes,
-  setErrorMessage,
-}) => {
+const Notes = ({ setErrorMessage }) => {
+  const [notes, setNotes] = useState(null);
+  const [showAll, setShowAll] = useState(true);
+
+  useEffect(() => {
+    notesService.getAllNotes().then((initialNotes) => {
+      setNotes(initialNotes);
+    });
+  }, []);
+
   if (!notes) {
     return null;
   }
+
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   const toggleImportanceOf = (id) => {
     const note = notes.find((note) => note.id === id);
@@ -39,8 +43,6 @@ const Notes = ({
     });
   };
 
-  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
-
   return (
     <>
       <button onClick={() => setShowAll(!showAll)}>
@@ -58,12 +60,7 @@ const Notes = ({
         ))}
       </ul>
 
-      <NoteForm
-        newNotes={newNotes}
-        setNewNotes={setNewNotes}
-        setNotes={setNotes}
-        notes={notes}
-      />
+      <NoteForm setNotes={setNotes} notes={notes} />
     </>
   );
 };

@@ -8,25 +8,15 @@ import loginService from './services/login';
 import notesService from './services/notes';
 
 const App = () => {
-  const [notes, setNotes] = useState(null);
-  const [newNotes, setNewNotes] = useState('');
-  const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [loginVisible, setLoginVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const userKeyStorage = 'user';
-
-  useEffect(() => {
-    notesService.getAllNotes().then((initialNotes) => {
-      setNotes(initialNotes);
-    });
-  }, []);
+  const USER_KEY_LOCAL_STORAGE = 'user';
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem(userKeyStorage);
+    const loggedUserJSON = window.localStorage.getItem(USER_KEY_LOCAL_STORAGE);
 
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
@@ -41,13 +31,13 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
 
-      window.localStorage.setItem(userKeyStorage, JSON.stringify(user));
+      window.localStorage.setItem(USER_KEY_LOCAL_STORAGE, JSON.stringify(user));
       notesService.setToken(user.token);
       setUser(user);
 
       setUsername('');
       setPassword('');
-    } catch (exception) {
+    } catch {
       setErrorMessage('Wrong Credentials');
       setTimeout(() => {
         setErrorMessage(null);
@@ -56,14 +46,13 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem(userKeyStorage);
+    window.localStorage.removeItem(USER_KEY_LOCAL_STORAGE);
     setUser(null);
   };
 
   return (
     <>
       <h1>Notes</h1>
-      {user && <button onClick={handleLogout}>Logout</button>}
 
       {user === null ? (
         <Togglable buttonLabel='login'>
@@ -74,22 +63,13 @@ const App = () => {
             setUsername={setUsername}
             password={password}
             setPassword={setPassword}
-            loginVisible={loginVisible}
-            setLoginVisible={setLoginVisible}
           />
         </Togglable>
       ) : (
         <>
+          <button onClick={handleLogout}>Logout</button>
           <p>{user.username} logged-in</p>
-          <Notes
-            notes={notes}
-            setNotes={setNotes}
-            newNotes={newNotes}
-            setNewNotes={setNewNotes}
-            showAll={showAll}
-            setShowAll={setShowAll}
-            setErrorMessage={setErrorMessage}
-          />
+          <Notes setErrorMessage={setErrorMessage} />
         </>
       )}
 
