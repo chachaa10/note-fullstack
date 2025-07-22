@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
-import NoteForm from './components/NoteForm';
+import Notes from './components/Notes';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 import loginService from './services/login';
 import notesService from './services/notes';
 
@@ -14,6 +15,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [loginVisible, setLoginVisible] = useState(false);
 
   const userKeyStorage = 'user';
 
@@ -59,37 +61,40 @@ const App = () => {
   };
 
   return (
-    <div>
+    <>
       <h1>Notes</h1>
       {user && <button onClick={handleLogout}>Logout</button>}
 
-      <Notification message={errorMessage} />
-
       {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
+        <Togglable buttonLabel='login'>
+          <Notification message={errorMessage} />
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            loginVisible={loginVisible}
+            setLoginVisible={setLoginVisible}
+          />
+        </Togglable>
       ) : (
-        <div>
+        <>
           <p>{user.username} logged-in</p>
-          <NoteForm
-            showAll={showAll}
-            newNotes={newNotes}
-            setNewNotes={setNewNotes}
-            setShowAll={setShowAll}
+          <Notes
             notes={notes}
             setNotes={setNotes}
+            newNotes={newNotes}
+            setNewNotes={setNewNotes}
+            showAll={showAll}
+            setShowAll={setShowAll}
             setErrorMessage={setErrorMessage}
           />
-        </div>
+        </>
       )}
 
       <Footer />
-    </div>
+    </>
   );
 };
 
