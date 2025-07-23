@@ -4,8 +4,8 @@
   "description": "",
   "main": "",
   "scripts": {
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "deploy": "cd client && npm run build && cp -Recurse dist ../backend && git add -A && git commit -m chore: uibuild && git push",
+    "dev": "concurrently \"cd server && pnpm run dev\" \"cd client && pnpm run dev\"",
+    "deploy": "cd client && pnpm run build && cp -Recurse dist ../backend && git add -A && git commit -m chore: uibuild && git push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +16,6 @@
     "concurrently": "^9.2.0"
   },
   "devDependencies": {
-    "globals": "^16.2.0"
+    "globals": "^16.3.0"
   }
 }
