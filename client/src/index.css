@@ -6,7 +6,7 @@ h1 {
 .note {
   padding-top: 3px;
   color: grey;
-  font-size: 1rem;
+  font-size: 15px;
 }
 
 .error {
@@ -16,5 +16,5 @@ h1 {
   background: lightgrey;
   padding: 10px;
   color: red;
-  font-size: 1.25rem;
+  font-size: 20px;
 }

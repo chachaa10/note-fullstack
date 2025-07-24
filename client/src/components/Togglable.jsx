@@ -1,24 +1,25 @@
 import { useState } from 'react';
 
 const Togglable = (props) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: isVisible ? 'none' : '' };
-  const showWhenVisible = { display: isVisible ? '' : 'none' };
+  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const showWhenVisible = { display: visible ? '' : 'none' };
+
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
 
   return (
-    <>
+    <div>
       <div style={hideWhenVisible}>
-        <button onClick={() => setIsVisible(!isVisible)}>
-          {props.buttonLabel}
-        </button>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </div>
-
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={() => setIsVisible(!isVisible)}>cancel</button>
+        <button onClick={toggleVisibility}>cancel</button>
       </div>
-    </>
+    </div>
   );
 };
 
