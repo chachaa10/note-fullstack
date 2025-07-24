@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Footer from './components/Footer';
 import LoginForm from './components/LoginForm';
 import Note from './components/Note';
@@ -15,6 +15,8 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  const noteFormRef = useRef();
 
   const USER_KEY_LOCAL_STORAGE = 'loggedNoteappUser';
 
@@ -135,6 +137,10 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
+  const hideNoteForm = () => {
+    noteFormRef.current.toggleVisibility();
+  };
+
   const loginForm = () => {
     return (
       <Togglable buttonLabel='log in'>
@@ -160,8 +166,12 @@ const App = () => {
           <p>
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
-          <Togglable buttonLabel='new note'>
-            <NoteForm notes={notes} setNotes={setNotes} />
+          <Togglable buttonLabel='new note' ref={noteFormRef}>
+            <NoteForm
+              notes={notes}
+              setNotes={setNotes}
+              toggleVisibilityOfParent={hideNoteForm}
+            />
           </Togglable>
         </div>
       )}
