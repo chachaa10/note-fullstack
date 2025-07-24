@@ -1,14 +1,19 @@
 import { useState } from 'react';
+import noteService from '../services/notes';
 
-const NoteForm = ({ createNote }) => {
+const NoteForm = ({ notes, setNotes }) => {
   const [newNote, setNewNote] = useState('');
 
-  const addNote = (event) => {
+  const addNote = async (event) => {
     event.preventDefault();
-    createNote({
+
+    const noteObject = {
       content: newNote,
       important: true,
-    });
+    };
+
+    const returnedNote = await noteService.create(noteObject);
+    setNotes([...notes, returnedNote]);
 
     setNewNote('');
   };
