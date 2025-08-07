@@ -42,7 +42,6 @@ const App = () => {
         } else {
           setErrorMessage('Failed to fetch notes.');
           setTimeout(() => setErrorMessage(null), 5000);
-          console.error('Error fetching notes:', error);
         }
       }
     };
@@ -57,7 +56,10 @@ const App = () => {
     const note = notes.find((n) => n.id === id);
 
     if (!note) {
-      console.warn(`Note with id ${id} was not found`);
+      setErrorMessage(`Note with id ${id} was not found`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
       return;
     }
 
@@ -78,7 +80,6 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
-        console.error('Error updating note importance:', error);
       }
     }
   };
@@ -89,19 +90,16 @@ const App = () => {
         await noteService.deleteNote(id);
         setNotes(notes.filter((note) => note.id !== id));
       } catch (error) {
+        console.log('error:', error);
         if (error.message === 'Unauthorized: Please log in again.') {
           setUser(null); // Log out the user
           setErrorMessage('Session expired. Please log in again.');
           setTimeout(() => setErrorMessage(null), 5000);
         } else {
-          // Original error message for other issues
-          setErrorMessage(
-            `Failed to delete note. It might have been removed already.`
-          );
+          setErrorMessage(error.response.data.error);
           setTimeout(() => {
             setErrorMessage(null);
           }, 5000);
-          console.error('Error deleting note', error);
         }
       }
     }
