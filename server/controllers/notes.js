@@ -52,11 +52,6 @@ notesRouter.post('/', async (request, response) => {
   response.status(201).json(savedNote);
 });
 
-notesRouter.delete('/:id', async (request, response) => {
-  await Note.findByIdAndDelete(request.params.id);
-  response.status(204).end();
-});
-
 notesRouter.put('/:id', async (request, response, next) => {
   const { content, important } = request.body;
 
@@ -75,6 +70,16 @@ notesRouter.put('/:id', async (request, response, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+notesRouter.delete('/:id', async (request, response) => {
+  await Note.findByIdAndDelete(request.params.id);
+  response.status(204).end();
+});
+
+notesRouter.delete('/', async (request, response) => {
+  await Note.deleteMany({});
+  response.status(204).end();
 });
 
 module.exports = notesRouter;
