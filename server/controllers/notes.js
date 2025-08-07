@@ -55,18 +55,36 @@ notesRouter.post('/', async (request, response) => {
 notesRouter.put('/:id', async (request, response, next) => {
   const { content, important } = request.body;
 
-  try {
-    const note = await Note.findById(request.params.id);
-
-    if (!note) {
-      return response.status(404).end();
+  const getTokenFrom = (request) => {
+    const authorization = request.get('authorization');
+    if (authorization && authorization.startsWith('Bearer ')) {
+      return authorization.replace('Bearer ', '');
     }
+    return null;
+  };
+
+  try {
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' });
+    }
+
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return response.status(400).json({ error: 'UserId missing or invalid' });
+    }
+
+    const note = await Note.findById(request.params.id);
 
     note.content = content;
     note.important = important;
+    note.user = user._id;
 
-    const updatedNote = note.save();
-    return response.json(updatedNote);
+    await note.save();
+    user.notes = [...user.notes, note._id];
+    await user.save();
+
+    response.status(201).json(note);
   } catch (error) {
     next(error);
   }
