@@ -13,11 +13,10 @@ notesRouter.get('/', async (request, response) => {
 
 notesRouter.get('/:id', async (request, response) => {
   const note = await Note.findById(request.params.id);
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+
+  if (!note) return response.status(404).end();
+
+  response.json(note);
 });
 
 notesRouter.post('/', async (request, response) => {
@@ -77,6 +76,7 @@ notesRouter.put('/:id', async (request, response, next) => {
     }
 
     const note = await Note.findById(request.params.id);
+    if (!note) return response.status(404).json({ error: 'note not found' });
 
     note.content = content;
     note.important = important;
