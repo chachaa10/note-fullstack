@@ -91,6 +91,12 @@ notesRouter.put('/:id', async (request, response, next) => {
 });
 
 notesRouter.delete('/:id', async (request, response) => {
+  const note = await Note.findById(request.params.id);
+
+  if (!note) {
+    return response.status(404).json({ error: 'note does not exist' });
+  }
+
   await Note.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
