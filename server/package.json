@@ -13,15 +13,15 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.4"
+    "mongoose": "^8.17.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "dotenv": "^17.2.0",
-    "eslint": "^9.31.0",
+    "@eslint/js": "^9.32.0",
+    "dotenv": "^17.2.1",
+    "eslint": "^9.32.0",
     "globals": "^16.3.0",
     "supertest": "^7.1.4"
   }
