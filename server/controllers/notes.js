@@ -1,7 +1,9 @@
-const jwt = require('jsonwebtoken');
-const notesRouter = require('express').Router();
-const Note = require('../models/note');
-const User = require('../models/user');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import Note from '../models/note.js';
+import User from '../models/user.js';
+
+const notesRouter = express.Router();
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 });
@@ -106,4 +108,4 @@ notesRouter.delete('/', async (request, response) => {
   response.status(204).end();
 });
 
-module.exports = notesRouter;
+export default notesRouter;

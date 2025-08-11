@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { MONGODB_URI } = require('./utils/config');
+import mongoose from 'mongoose.js';
+import MONGODB_URI from './utils/config.js';
 
 const url = MONGODB_URI;
 
@@ -18,10 +18,10 @@ const Note = mongoose.model('Note', noteSchema);
 //   important: true,
 // })
 
-// // note.save().then((result) => {
-// //   console.log('note saved!')
-// //   mongoose.connection.close()
-// // })
+// note.save().then((result) => {
+//   console.log('note saved!')
+//   mongoose.connection.close()
+// })
 
 Note.find({}).then((result) => {
   result.forEach((note) => {

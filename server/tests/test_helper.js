@@ -1,6 +1,6 @@
-const NoteModel = require('../models/note');
-const UserModel = require('../models/user');
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
+import NoteModel from '../models/note';
+import UserModel from '../models/user';
 
 const initialNotes = [
   {
@@ -36,7 +36,7 @@ const hashedPassword = async (password) => {
   return await bcrypt.hash(password, saltRounds);
 };
 
-module.exports = {
+export default {
   initialNotes,
   nonExistingId,
   notesInDb,

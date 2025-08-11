@@ -1,17 +1,17 @@
-const { test, after, beforeEach, describe } = require('node:test');
-const assert = require('node:assert');
-const mongoose = require('mongoose');
-const supertest = require('supertest');
-const NoteModel = require('../models/note');
-const UserModel = require('../models/user');
-const {
+import mongoose from 'mongoose';
+import assert from 'node:assert';
+import { after, beforeEach, describe, test } from 'node:test';
+import supertest from 'supertest';
+import app from '../app';
+import NoteModel from '../models/note';
+import UserModel from '../models/user';
+import {
+  hashedPassword,
   initialNotes,
   nonExistingId,
   notesInDb,
   usersInDb,
-  hashedPassword,
-} = require('./test_helper');
-const app = require('../app');
+} from './test_helper';
 
 const api = supertest(app);
 

@@ -1,6 +1,8 @@
-const bcrypt = require('bcrypt');
-const usersRouter = require('express').Router();
-const User = require('../models/user.js');
+import bcrypt from 'bcrypt';
+import express from 'express';
+import User from '../models/user.js';
+
+const usersRouter = express.Router();
 
 // get all users with respective notes
 usersRouter.get('/', async (request, response) => {
@@ -35,4 +37,4 @@ usersRouter.delete('/:id', async (request, response) => {
   response.status(204).end();
 });
 
-module.exports = usersRouter;
+export default usersRouter;

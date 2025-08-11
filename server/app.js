@@ -1,11 +1,11 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const { MONGODB_URI } = require('./utils/config');
-const logger = require('./utils/logger');
-const middleware = require('./utils/middleware');
-const notesRouter = require('./controllers/notes');
-const usersRouter = require('./controllers/users');
-const loginRouter = require('./controllers/login');
+import express from 'express';
+import mongoose from 'mongoose';
+import loginRouter from './controllers/login.js';
+import notesRouter from './controllers/notes.js';
+import usersRouter from './controllers/users.js';
+import { MONGODB_URI } from './utils/config.js';
+import logger from './utils/logger.js';
+import middleware from './utils/middleware.js';
 
 const app = express();
 
@@ -33,4 +33,4 @@ app.use('/api/users', usersRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
-module.exports = app;
+export default app;
