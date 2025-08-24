@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@eslint/js": "^9.34.0",
     "axios": "^1.11.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"

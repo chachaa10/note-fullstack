@@ -18,7 +18,7 @@ const App = () => {
   const handleLogin = async (username, password) => {
     try {
       await login(username, password);
-    } catch (exception) {
+    } catch {
       setErrorMessage('wrong credentials');
       setTimeout(() => {
         setErrorMessage(null);
@@ -30,7 +30,7 @@ const App = () => {
     try {
       noteFormRef.current.toggleVisibility();
       await addNote(noteObject);
-    } catch (error) {
+    } catch {
       setErrorMessage('Failed to create note.');
       setTimeout(() => {
         setErrorMessage(null);

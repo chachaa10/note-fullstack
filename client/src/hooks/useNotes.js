@@ -10,7 +10,6 @@ export const useNotes = (user) => {
         const initialNotes = await noteService.getAll();
         setNotes(initialNotes);
       } catch (error) {
-        // In a real app, you'd want to handle this error more gracefully
         console.error(error);
       }
     };
