@@ -43,7 +43,6 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      console.log('Token expired or invalid. Logging out user.');
       window.localStorage.removeItem('loggedNoteappUser');
       token = null;
       throw new Error('Unauthorized: Please log in again.');
