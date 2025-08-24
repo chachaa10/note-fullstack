@@ -18,3 +18,9 @@ h1 {
   color: red;
   font-size: 20px;
 }
+
+.footer {
+  color: green;
+  font-style: italic;
+  font-size: 16px;
+}
