@@ -139,3 +139,8 @@ out
 # SvelteKit build / generate output
 .svelte-kit
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

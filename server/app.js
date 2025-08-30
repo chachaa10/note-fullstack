@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import loginRouter from './controllers/login.js';
 import notesRouter from './controllers/notes.js';
+import testingRouter from './controllers/testing.js';
 import usersRouter from './controllers/users.js';
 import { MONGODB_URI } from './utils/config.js';
 import logger from './utils/logger.js';
@@ -28,6 +29,11 @@ app.use(middleware.requestLogger);
 app.use('/api/login', loginRouter);
 app.use('/api/notes', notesRouter);
 app.use('/api/users', usersRouter);
+
+// testing
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', testingRouter);
+}
 
 // error handling
 app.use(middleware.unknownEndpoint);
