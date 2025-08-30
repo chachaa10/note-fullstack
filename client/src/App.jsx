@@ -52,7 +52,7 @@ const App = () => {
       ) : (
         <div>
           <p>
-            {user.name} logged in <button onClick={logout}>logout</button>
+            {user.username} logged in <button onClick={logout}>logout</button>
           </p>
           <Togglable buttonLabel='new note' ref={noteFormRef}>
             <NoteForm createNote={handleAddNote} />
