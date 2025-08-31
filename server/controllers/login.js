@@ -23,13 +23,14 @@ loginRouter.post('/', async (request, response) => {
     id: user._id,
   };
 
+  const ONE_HOUR = 60 * 60;
   const token = jwt.sign(userForToken, process.env.SECRET, {
-    expiresIn: 60 * 60,
+    expiresIn: ONE_HOUR,
   });
 
   response
     .status(200)
-    .send({ token, username: user.username, name: user.name });
+    .json({ token, username: user.username, name: user.name });
 });
 
 export default loginRouter;
