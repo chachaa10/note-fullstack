@@ -5,8 +5,12 @@ import notesRouter from './controllers/notes.js';
 import testingRouter from './controllers/testing.js';
 import usersRouter from './controllers/users.js';
 import { MONGODB_URI } from './utils/config.js';
-import logger from './utils/logger.js';
-import middleware from './utils/middleware.js';
+import { logInfo } from './utils/logger.js';
+import {
+  errorHandler,
+  requestLogger,
+  unknownEndpoint,
+} from './utils/middleware.js';
 
 const app = express();
 
@@ -14,16 +18,16 @@ const app = express();
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    logger.info('connected to MongoDB');
+    logInfo('connected to MongoDB');
   })
   .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message);
+    error('error connecting to MongoDB:', error.message);
   });
 
 // middleware
 app.use(express.static('dist'));
 app.use(express.json());
-app.use(middleware.requestLogger);
+app.use(requestLogger);
 
 // routes
 app.use('/api/login', loginRouter);
@@ -36,7 +40,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 // error handling
-app.use(middleware.unknownEndpoint);
-app.use(middleware.errorHandler);
+app.use(unknownEndpoint);
+app.use(errorHandler);
 
 export default app;
