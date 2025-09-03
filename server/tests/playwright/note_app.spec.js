@@ -1,25 +1,18 @@
 import { expect, test } from '@playwright/test';
+import { createNote, loginWith } from './test_helper';
+const { beforeEach, describe } = test;
 
-async function loggedInUser(page) {
-  await page.getByRole('button', { name: 'log in' }).click();
-
-  await page.getByLabel('username').fill('jhin');
-  await page.getByLabel('password').fill('4444');
-
-  await page.getByRole('button', { name: 'login' }).click();
-}
-
-test.describe('Note App', () => {
-  test.beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3001/api/testing/reset');
-    await request.post('http://localhost:3001/api/users', {
+describe('Note App', () => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('/api/testing/reset');
+    await request.post('/api/users', {
       data: {
         username: 'jhin',
         password: '4444',
       },
     });
 
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
   });
 
   test('front page can be opened', async ({ page }) => {
@@ -32,42 +25,51 @@ test.describe('Note App', () => {
     ).toBeVisible();
   });
 
+  test('login fails if wrong password', async ({ page }) => {
+    await loginWith(page, 'jhin', 'wrong');
+
+    const errorDiv = page.locator('.error');
+    await expect(errorDiv).toContainText('wrong credentials');
+    await expect(errorDiv).toHaveCSS('border-style', 'solid');
+    await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)');
+    await expect(page.getByText('jhin logged in')).not.toBeVisible();
+  });
+
   test('user can log in', async ({ page }) => {
-    await loggedInUser(page);
+    await loginWith(page, 'jhin', '4444');
 
     await expect(page.getByText('jhin logged in')).toBeVisible();
   });
 
-  test.describe('when user logged in', () => {
-    test.beforeEach(async ({ page }) => {
-      await loggedInUser(page);
+  describe('when user logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'jhin', '4444');
     });
 
     test('a new note can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'new note' }).click();
-      await page
-        .getByRole('textbox', { name: 'content' })
-        .fill('a new note created by playwright');
-      await page.getByRole('button', { name: 'save' }).click();
+      await createNote(page, ' a new note created by playwright');
 
       await expect(
         page.getByText('a new note created by playwright')
       ).toBeVisible();
     });
 
-    test.describe('and a note exists', () => {
-      test.beforeEach(async ({ page }) => {
-        await page.getByRole('button', { name: 'new note' }).click();
-        await page
-          .getByRole('textbox', { name: 'content' })
-          .fill('another note by playwright');
-        await page.getByRole('button', { name: 'save' }).click();
+    describe('and several notes exists', () => {
+      beforeEach(async ({ page }) => {
+        await createNote(page, 'first note');
+        await createNote(page, 'second note');
+        await createNote(page, 'third note');
       });
 
-      test('importance can be changed', async ({ page }) => {
-        await page.getByRole('button', { name: 'make not important' }).click();
+      test('one of those notes can be made non-important', async ({ page }) => {
+        await page.pause();
+        const secondNote = page.getByText('second note').locator('..');
 
-        await expect(page.getByText('make important')).toBeVisible();
+        await secondNote
+          .getByRole('button', { name: 'make not important' })
+          .click();
+
+        await expect(secondNote.getByText('make important')).toBeVisible();
       });
     });
   });
